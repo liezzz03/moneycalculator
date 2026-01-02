@@ -1,4 +1,4 @@
-package software.ulpgc.moneycalculator.io;
+package software.ulpgc.moneycalculator.io.exchangeRate;
 
 import software.ulpgc.moneycalculator.model.Currency;
 import software.ulpgc.moneycalculator.model.ExchangeRate;
