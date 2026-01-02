@@ -8,15 +8,15 @@ import software.ulpgc.moneycalculator.ui.CurrencyDialog;
 import software.ulpgc.moneycalculator.ui.MoneyDialog;
 import software.ulpgc.moneycalculator.ui.MoneyDisplay;
 
-public class ExchangeMoneyCommand implements Command {
-    private final MoneyDialog moneyDialog;
+public class CalculateCommand implements Command {
     private final CurrencyDialog currencyDialog;
+    private final MoneyDialog moneyDialog;
     private final ExchangeRateLoader exchangeRateLoader;
     private final MoneyDisplay moneyDisplay;
 
-    public ExchangeMoneyCommand(MoneyDialog moneyDialog, CurrencyDialog currencyDialog, ExchangeRateLoader exchangeRateLoader, MoneyDisplay moneyDisplay) {
-        this.moneyDialog = moneyDialog;
+    public CalculateCommand(CurrencyDialog currencyDialog, MoneyDialog moneyDialog, ExchangeRateLoader exchangeRateLoader, MoneyDisplay moneyDisplay) {
         this.currencyDialog = currencyDialog;
+        this.moneyDialog = moneyDialog;
         this.exchangeRateLoader = exchangeRateLoader;
         this.moneyDisplay = moneyDisplay;
     }
@@ -24,11 +24,10 @@ public class ExchangeMoneyCommand implements Command {
     @Override
     public void execute() {
         Money money = moneyDialog.get();
-        Currency currency = currencyDialog.get();
+        Currency currencyTo = currencyDialog.get();
+        ExchangeRate exchangeRate = exchangeRateLoader.load(money.currency(), currencyTo);
+        Money conversion = new Money(money.amount() * exchangeRate.rate(), currencyTo);
 
-        ExchangeRate exchangeRate = exchangeRateLoader.load(money.currency(), currency);
-
-        Money result = new Money(money.amount() * exchangeRate.rate(), currency);
-        moneyDisplay.show(result);
+        moneyDisplay.show(conversion);
     }
 }
